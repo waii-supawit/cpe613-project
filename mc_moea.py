@@ -54,7 +54,7 @@ def stations_mutation(s):
 def assign_new_station(solution, stations):
     solution_local = deepcopy(solution)
     solution_local.stations = deepcopy(stations)
-    solution_local.reset()
+    solution_local.hard_reset()
     return solution_local
 
 def crossover(population, crossover_prop):
@@ -100,6 +100,7 @@ class Solution(object):
         self.fitness = np.nan
         
     def compute_infos(self, position):
+        self.soft_reset()
         for sb in position:
             signal_strength = []
             for idx, st in enumerate(self.stations):
@@ -120,8 +121,17 @@ class Solution(object):
         self.fitness = -(self.signal_strength/110) + (self.construction_cost/40000000) + (self.num_orphans/1000)
         self.is_compute = True
         return self
+    def soft_reset(self):
+        self.is_compute = False
+        self.signal_strength_l = []
+        self.num_orphans = 0
+        self.signal_strength = np.nan
+        self.construction_cost = np.nan
+        self.fitness = np.nan
+        for s in self.stations:
+            s.current_capacity = 0
     
-    def reset(self):
+    def hard_reset(self):
         self.id = str(uuid.uuid4())
         self.is_compute = False
         self.signal_strength_l = []
