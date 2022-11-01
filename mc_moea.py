@@ -1,3 +1,34 @@
+import pickle
+import glob
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.spatial import distance
+import uuid
+from pandarallel import pandarallel
+from tqdm.notebook import tqdm
+from copy import deepcopy
+
+pandarallel.initialize()
+
+types = ["900 MHz Type I", "900 MHz Type II", "1800 MHz Type I", "1800 MHz Type II", "2600 MHz Type I", "2600 MHz Type II"]
+frequency = [900, 900, 1800, 1800, 2600, 2600]
+capacity = [800, 1200, 850, 1250, 800 ,1300]
+cost = [1150000, 1500000, 880000, 1220000, 950000, 1350000]
+station_types = pd.DataFrame({"types": types, "frequency":frequency, "capacity":capacity, "cost":cost})
+
+bound_max = 800
+bound_min = -800
+
+def generate_station(n):
+    stations = []
+    for i in range(n):
+        s_info = station_types.sample(n=1).iloc[0]
+        pos = np.random.uniform(-800, 800, size=2)
+        s = Station(s_info["types"], pos[0], pos[1], s_info["frequency"], s_info["capacity"], s_info["cost"])
+        stations.append(s)
+    return stations
+
 def distance_scale(p1, p2, scale=1):
     return (((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**(1/2)) * scale
 
