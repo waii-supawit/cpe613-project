@@ -20,11 +20,11 @@ station_types = pd.DataFrame({"types": types, "frequency":frequency, "capacity":
 bound_max = 800
 bound_min = -800
 
-def generate_station(n):
+def generate_station(n, lower_bound=-800, upper_bound=800):
     stations = []
     for i in range(n):
         s_info = station_types.sample(n=1).iloc[0]
-        pos = np.random.uniform(-800, 800, size=2)
+        pos = np.random.uniform(lower_bound, upper_bound, size=2)
         s = Station(s_info["types"], pos[0], pos[1], s_info["frequency"], s_info["capacity"], s_info["cost"])
         stations.append(s)
     return stations
